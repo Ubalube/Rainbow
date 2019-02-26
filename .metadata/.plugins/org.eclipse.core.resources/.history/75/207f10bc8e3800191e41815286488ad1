@@ -1,0 +1,85 @@
+package me.xboxsignout.rainbow;
+
+import java.util.HashMap;
+
+import org.bukkit.ChatColor;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+public class Listeners implements Listener
+{
+	
+	private HashMap<String, ItemStack[]> mySavedItems = new HashMap<String, ItemStack[]>();
+	 
+	public void saveInventory(Player player)
+	{
+	    this.mySavedItems.put(player.getName(), copyInventory(player.getInventory()));
+	}
+	 
+	/**
+	* This removes the saved inventory from our HashMap, and restores it to the player if it existed.
+	* @return true iff success
+	*/
+	public boolean restoreInventory(Player player)
+	{
+	    ItemStack[] savedInventory = this.mySavedItems.remove(player.getName());
+	    if(savedInventory == null)
+	        return false;
+	    restoreInventory(player, savedInventory);
+	    return true;
+	}
+	 
+	private ItemStack[] copyInventory(Inventory inv)
+	{
+	    ItemStack[] original = inv.getContents();
+	    ItemStack[] copy = new ItemStack[original.length];
+	    for(int i = 0; i < original.length; ++i)
+	        if(original != null)
+	            copy = original;
+	    return copy;
+	}
+	 
+	private void restoreInventory(Player p, ItemStack[] inventory)
+	{
+	    p.getInventory().setContents(inventory);
+	}
+	
+	@EventHandler
+	public void onSignChange(SignChangeEvent e)
+	{
+		if(e.getLine(0).equalsIgnoreCase("[R6S]"))
+		{
+			String levelname = e.getLine(1);
+			if(levelname == "")
+			{
+				e.setLine(0, ChatColor.RED + "ERROR");
+				e.setLine(1, "You need a level name!");
+			}
+			else
+			{
+				e.setLine(0, ChatColor.BLUE + "Rainbow Six");
+				e.setLine(1, "join");
+				e.setLine(2, ChatColor.GREEN + levelname);
+				e.setLine(3, "WAITING...");
+			}
+			
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent e)
+	{
+		if(!(e.getAction() == Action.RIGHT_CLICK_BLOCK)) return;
+		if(e.getClickedBlock().getState() instanceof Sign)
+		{
+		}
+	}
+	
+}

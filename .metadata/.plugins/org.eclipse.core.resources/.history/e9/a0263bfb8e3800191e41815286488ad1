@@ -1,0 +1,59 @@
+package me.xboxsignout.rainbow;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin implements Listener
+{
+
+	private OperatorSelect menu;
+	
+	@Override
+	public void onEnable() {
+		menu = new OperatorSelect(this);
+		getLogger().info("Craft Six Siege has been enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(new Listeners(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		getLogger().info("Craft Six Siege listeners ready!");
+		getLogger().info("Craft Six Siege commands ready!");
+	}
+	
+	@Override
+	public void onDisable() {
+		getLogger().info("Craft Six Siege has been disabled!");
+	}
+	
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) 
+	{
+        if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + "The console cannot use Medic!");
+                return true;
+        }
+       
+        Player player = (Player) sender;
+       
+        if (cmd.getName().equalsIgnoreCase("message")) 
+        {
+        	player.sendMessage(ChatColor.GREEN + "UI Opened");
+        	menu.show(player);
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("setspawn")) {
+            settings.getData().set("spawn.world", p.getLocation().getWorld().getName());
+            settings.getData().set("spawn.x", p.getLocation().getX());
+            settings.getData().set("spawn.y", p.getLocation().getY());
+            settings.getData().set("spawn.z", p.getLocation().getZ());
+            settings.saveData();
+            p.sendMessage(ChatColor.GREEN + "Spawn set!");
+            return true;
+    }
+        
+        return true;
+	}
+	
+}

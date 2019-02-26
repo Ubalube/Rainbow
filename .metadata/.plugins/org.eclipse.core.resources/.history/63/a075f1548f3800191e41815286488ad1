@@ -1,0 +1,71 @@
+package me.xboxsignout.rainbow;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin implements Listener
+{
+	Settings settings = Settings.getInstance();
+	private OperatorSelect menu;
+	
+	public List<String> arenas;
+	
+	@Override
+	public void onEnable() {
+		menu = new OperatorSelect(this);
+		settings.setup(this);
+		getLogger().info("Craft Six Siege has been enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(new Listeners(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		getLogger().info("Craft Six Siege listeners ready!");
+		getLogger().info("Craft Six Siege commands ready!");
+	}
+	
+	@Override
+	public void onDisable() {
+		getLogger().info("Craft Six Siege has been disabled!");
+	}
+	
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) 
+	{
+        if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + "The console cannot use Medic!");
+                return true;
+        }
+       
+        Player p = (Player) sender;
+       
+        if (cmd.getName().equalsIgnoreCase("message")) 
+        {
+        	p.sendMessage(ChatColor.GREEN + "UI Opened");
+        	menu.show(p);
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("setwarp")) {
+            if (args.length == 0) {
+                    p.sendMessage(ChatColor.RED + "Please specify a name!");
+                    return true;
+            }
+            settings.getData().set("arenas." + args[0] + ".world", p.getLocation().getWorld().getName());
+            settings.getData().set("arenas." + args[0] + ".x", p.getLocation().getX());
+            settings.getData().set("arenas." + args[0] + ".y", p.getLocation().getY());
+            settings.getData().set("arenas." + args[0] + ".z", p.getLocation().getZ());
+            settings.saveData();
+            arenas.add(args[0]);
+            p.sendMessage(ChatColor.GREEN + "Set arena " + args[0] + "!");
+        }
+        
+        return true;
+	}
+	
+}

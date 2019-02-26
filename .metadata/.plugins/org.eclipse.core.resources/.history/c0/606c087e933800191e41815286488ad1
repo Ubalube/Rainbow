@@ -1,0 +1,70 @@
+package me.xboxsignout.rainbow;
+
+import org.bukkit.event.Listener;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
+
+public class Matchmaking implements Listener
+{
+	private Inventory inv;
+   
+    public Matchmaking(Plugin p) {
+            inv = Bukkit.getServer().createInventory(null, 9, "Join Rainbow");
+            
+            ItemStack casual = new ItemStack(Material.IRON_INGOT);
+            ItemMeta casualmeta = casual.getItemMeta();
+            casualmeta.setDisplayName(ChatColor.YELLOW + "Casual");
+            casual.setItemMeta(casualmeta);
+            
+            ItemStack ranked = new ItemStack(Material.DIAMOND);
+            ItemMeta rankedmeta = ranked.getItemMeta();
+            rankedmeta.setDisplayName(ChatColor.YELLOW + "Ranked");
+            ranked.setItemMeta(rankedmeta);
+            
+            ItemStack exit = new ItemStack(Material.BARRIER);
+            ItemMeta exitmeta = exit.getItemMeta();
+            exitmeta.setDisplayName(ChatColor.YELLOW + "Exit");
+            exit.setItemMeta(exitmeta);
+           
+            inv.setItem(0, casual);
+            inv.setItem(4, exit);
+            inv.setItem(8, ranked);
+           
+            Bukkit.getServer().getPluginManager().registerEvents(this, p);
+    }
+   
+    public void show(Player p) {
+            p.openInventory(inv);
+    }
+   
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+            if (!e.getInventory().getName().equalsIgnoreCase(inv.getName())) return;
+            if (e.getCurrentItem().getItemMeta() == null) return;
+            if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Exit")) {
+                    e.setCancelled(true);
+                    e.getWhoClicked().getInventory().addItem(new ItemStack(Material.PAPER));
+                    e.getWhoClicked().closeInventory();
+            }
+            if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Ranked")) {
+                    e.setCancelled(true);
+                    e.getWhoClicked().getInventory().addItem(new ItemStack(Material.SLIME_BALL));
+                    e.getWhoClicked().closeInventory();
+            }
+            if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Casual")) {
+                    e.setCancelled(true);
+                    e.getWhoClicked().getInventory().addItem(new ItemStack(Material.ANVIL));
+                    e.getWhoClicked().closeInventory();
+            }
+        }
+    }
+}

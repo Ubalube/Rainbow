@@ -1,0 +1,6 @@
+package me.xboxsignout.rainbow;
+
+public class OperatorSelect implements Listener
+{
+
+}

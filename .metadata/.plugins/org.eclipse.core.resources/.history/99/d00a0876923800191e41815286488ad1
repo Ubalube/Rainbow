@@ -1,0 +1,146 @@
+package me.xboxsignout.rainbow;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Sign;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin implements Listener
+{
+	Settings settings = Settings.getInstance();
+	private OperatorSelect menu;
+	
+	@Override
+	public void onEnable() {
+		menu = new OperatorSelect(this);
+		settings.setup(this);
+		getLogger().info("Craft Six Siege has been enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		getLogger().info("Craft Six Siege listeners ready!");
+		getLogger().info("Craft Six Siege commands ready!");
+	}
+	
+	@Override
+	public void onDisable() {
+		getLogger().info("Craft Six Siege has been disabled!");
+	}
+	
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) 
+	{
+        if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + "The console cannot use Medic!");
+                return true;
+        }
+       
+        Player p = (Player) sender;
+       
+        if (cmd.getName().equalsIgnoreCase("message")) 
+        {
+        	p.sendMessage(ChatColor.GREEN + "UI Opened");
+        	menu.show(p);
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("setarena")) {
+            if (args.length == 0) {
+                    p.sendMessage(ChatColor.RED + "Please specify a name!");
+                    return true;
+            }
+            settings.getData().set("arenas." + args[0] + ".world", p.getLocation().getWorld().getName());
+            settings.getData().set("arenas." + args[0] + ".x", p.getLocation().getX());
+            settings.getData().set("arenas." + args[0] + ".y", p.getLocation().getY());
+            settings.getData().set("arenas." + args[0] + ".z", p.getLocation().getZ());
+            settings.saveData();
+            p.sendMessage(ChatColor.GREEN + "Set arena " + args[0] + "!");
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("joinarena")) {
+            if (args.length == 0) {
+                    p.sendMessage(ChatColor.RED + "Please specify a name!");
+                    return true;
+            }
+            if (settings.getData().getConfigurationSection("arenas." + args[0]) == null) {
+                    p.sendMessage(ChatColor.RED + "Arena " + args[0] + " does not exist!");
+                    return true;
+            }
+            World w = Bukkit.getServer().getWorld(settings.getData().getString("arenas." + args[0] + ".world"));
+            double x = settings.getData().getDouble("arenas." + args[0] + ".x");
+            double y = settings.getData().getDouble("arenas." + args[0] + ".y");
+            double z = settings.getData().getDouble("arenas." + args[0] + ".z");
+            p.teleport(new Location(w, x, y, z));
+            p.sendMessage(ChatColor.GREEN + "Joined " + args[0] + "!");
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("delarena")) {
+            if (args.length == 0) {
+                    p.sendMessage(ChatColor.RED + "Please specify a name!");
+                    return true;
+            }
+            if (settings.getData().getConfigurationSection("arenas." + args[0]) == null) {
+                    p.sendMessage(ChatColor.RED + "Arena " + args[0] + " does not exist!");
+                    return true;
+            }
+            settings.getData().set("arenas." + args[0], null);
+            settings.saveData();
+            p.sendMessage(ChatColor.GREEN + "Removed arena " + args[0] + "!");
+        }
+        
+        return true;
+	}
+	
+	/*
+	 * 
+	 * SIGNS
+	 * 
+	 */
+	
+	@EventHandler
+	public void onSignChange(SignChangeEvent e)
+	{
+		if(e.getLine(0).equalsIgnoreCase("[R6S]"))
+		{
+			String levelname = e.getLine(1);
+			if(levelname.length() == 0)
+			{
+				e.setLine(0, ChatColor.RED + "ERROR");
+				e.setLine(1, "Specify a level name!");
+				return;
+			}
+			if(settings.getData().getConfigurationSection("arenas." + levelname) == null)
+			{
+				e.setLine(0, ChatColor.RED + "ERROR");
+				e.setLine(1, levelname);
+				e.setLine(2, "Does not exist!");
+			}
+			else
+			{
+				e.setLine(0, ChatColor.BLUE + "Rainbow Six");
+				e.setLine(1, "0/5");
+				e.setLine(2, levelname);
+				e.setLine(3, "WAITING...");
+			}
+			
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent e)
+	{
+		if(!(e.getAction() == Action.RIGHT_CLICK_BLOCK)) return;
+		if(e.getClickedBlock().getState() instanceof Sign)
+		{
+			
+			Player p = e.getPlayer();
+		}
+	}
+	
+}

@@ -1,0 +1,31 @@
+package me.xboxsignout.rainbow;
+
+import org.bukkit.entity.EntityType;
+
+import net.minecraft.server.v1_12_R1.EntityChicken;
+
+public enum CustomEntities 
+{
+	CHICKEN("Chicken", 51, EntityType.CHICKEN, EntityChicken.class, CustomEntityChicken.class),
+	
+	private CustomEntities(String name, int id, EntityType entityType, Class<? extends EntityInsentient> nmsClass, Class<? extends EntityInsentient> customClass){
+        this.name = name;
+        this.id = id;
+        this.entityType = entityType;
+        this.nmsClass = nmsClass;
+        this.customClass = customClass;
+    }
+ 
+    public String getName(){
+        return this.name;
+    }
+ 
+    public int getID(){
+        return this.id;
+    }
+ 
+    public EntityType getEntityType(){
+        return this.entityType;
+    }
+	
+}

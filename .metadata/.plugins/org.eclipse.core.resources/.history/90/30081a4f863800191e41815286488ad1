@@ -1,0 +1,5 @@
+package me.xboxsignout.rainbow;
+
+public class Command {
+
+}

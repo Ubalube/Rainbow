@@ -1,0 +1,132 @@
+package me.xboxsignout.rainbow;
+
+import org.bukkit.event.Listener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
+
+public class Matchmaking implements Listener
+{
+	private Inventory inv;
+   
+	private Settings settings;
+	
+	Map arena;
+	
+    public Matchmaking(Plugin p, Settings s) {
+            inv = Bukkit.getServer().createInventory(null, 9, "Join Rainbow");
+            
+            ItemStack casual = new ItemStack(Material.IRON_INGOT);
+            ItemMeta casualmeta = casual.getItemMeta();
+            casualmeta.setDisplayName(ChatColor.YELLOW + "Casual");
+            casual.setItemMeta(casualmeta);
+            
+            ItemStack ranked = new ItemStack(Material.DIAMOND);
+            ItemMeta rankedmeta = ranked.getItemMeta();
+            rankedmeta.setDisplayName(ChatColor.YELLOW + "Ranked");
+            ranked.setItemMeta(rankedmeta);
+            
+            ItemStack exit = new ItemStack(Material.BARRIER);
+            ItemMeta exitmeta = exit.getItemMeta();
+            exitmeta.setDisplayName(ChatColor.YELLOW + "Exit");
+            exit.setItemMeta(exitmeta);
+           
+            inv.setItem(0, casual);
+            inv.setItem(4, exit);
+            inv.setItem(8, ranked);
+            
+            settings = s;
+           
+            Bukkit.getServer().getPluginManager().registerEvents(this, p);
+    }
+   
+    public void show(Player p) {
+            p.openInventory(inv);
+    }
+   
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+            if (!e.getInventory().getName().equalsIgnoreCase(inv.getName())) return;
+            if (e.getCurrentItem().getItemMeta() == null) return;
+            if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Exit")) {
+                    e.setCancelled(true);
+                    e.getWhoClicked().closeInventory();
+            }
+            if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Ranked")) {
+                    e.setCancelled(true);
+                    Player p = (Player) e.getWhoClicked();
+                    p.sendMessage("Matchmaking for Ranked");
+                    
+                    if(settings.getData().getStringList("arenalist").size() == 0)
+                    {
+                    	p.sendMessage("There are no games for ranked");
+                    }
+                    else
+                    {
+                    	List<String> rankedMatches = new ArrayList<>();
+                    	for (String string : settings.getData().getStringList("arenalist")) 
+                    	{
+							if(settings.getData().get("arenas." + string + ".mode") == "ranked")
+							{
+								rankedMatches.add(string);
+							}
+						}
+                    	 Random rand = new Random();
+                    	 int match = rand.nextInt(rankedMatches.size());
+                         String level = rankedMatches.get(match);
+                         World w = Bukkit.getServer().getWorld(settings.getData().getString("arenas." + level + ".world"));
+                         double x = settings.getData().getDouble("arenas." + level + ".x");
+                         double y = settings.getData().getDouble("arenas." + level + ".y");
+                         double z = settings.getData().getDouble("arenas." + level + ".z");
+                         p.teleport(new Location(w, x, y, z));
+                         p.sendTitle(ChatColor.RED + "Ranked", "Find and defuse the biohazard container", 20, 80, 20);
+                    }
+                    e.getWhoClicked().closeInventory();
+            }
+            if (e.getCurrentItem().getItemMeta().getDisplayName().contains("Casual")) {
+                    e.setCancelled(true);
+                    Player p = (Player) e.getWhoClicked();
+                    p.sendMessage("Matchmaking for Casual");
+                    
+                    if(settings.getData().getStringList("arenalist").size() == 0)
+                    {
+                    	p.sendMessage("There are no games for casual");
+                    }
+                    else
+                    {
+                    	List<String> casualMatches = new ArrayList<>();
+                    	for (String string : settings.getData().getStringList("arenalist")) 
+                    	{
+                    		if(settings.getData().get("arenas." + string + ".mode") == "casual")
+							{
+								casualMatches.add(string);
+							}
+						}
+                    	 Random rand = new Random();
+                         int match = rand.nextInt(casualMatches.size());
+                         String level = casualMatches.get(match);
+                         World w = Bukkit.getServer().getWorld(settings.getData().getString("arenas." + level + ".world"));
+                         double x = settings.getData().getDouble("arenas." + level + ".x");
+                         double y = settings.getData().getDouble("arenas." + level + ".y");
+                         double z = settings.getData().getDouble("arenas." + level + ".z");
+                         p.teleport(new Location(w, x, y, z));
+                         p.resetTitle();
+                         p.sendTitle(ChatColor.BLUE + "Casual", "Find and defuse the biohazard container", 20, 80, 20);
+                    }
+                    e.getWhoClicked().closeInventory();
+            }
+    }
+}

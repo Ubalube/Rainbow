@@ -1,0 +1,25 @@
+package me.xboxsignout.rainbow;
+
+import org.bukkit.attribute.Attribute;
+import org.xml.sax.Attributes;
+
+import net.minecraft.server.v1_12_R1.EntityChicken;
+import net.minecraft.server.v1_12_R1.IAttribute;
+import net.minecraft.server.v1_12_R1.World;
+
+public class EntityBomb extends EntityChicken
+{
+
+	public EntityBomb(World world) {
+		super(world);
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	protected void initAttributes() {
+		// TODO Auto-generated method stub
+		super.initAttributes();
+		
+	}
+
+}

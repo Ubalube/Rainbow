@@ -1,0 +1,6 @@
+name: RainbowSix
+main: me.xboxsignout.rainbow.Main
+version: 1.0
+commands:
+   message:
+      description: A test command

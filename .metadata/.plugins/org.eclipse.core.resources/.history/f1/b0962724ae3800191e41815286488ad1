@@ -1,0 +1,16 @@
+name: RainbowSix
+main: me.xboxsignout.rainbow.Main
+version: 1.0
+commands:
+   join:
+      description: A test command
+   getarenas:
+      description: Get all arenas
+   setarena:
+      description: Set an arena
+   joinarena:
+      description: Join an arena
+   delarena:
+      description: Delete an arena
+   modifyarena:
+      description: Modify an arena

@@ -1,0 +1,7 @@
+package me.xboxsignout.rainbow;
+
+public enum Teams 
+{
+	BLUE,
+	RED
+}

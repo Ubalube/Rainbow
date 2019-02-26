@@ -1,0 +1,210 @@
+package me.xboxsignout.rainbow;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin implements Listener
+{
+	Settings settings = Settings.getInstance();
+	private OperatorSelect menu;
+	
+	public List<String> arenas = new List<String>() {
+		
+		@Override
+		public <T> T[] toArray(T[] a) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public Object[] toArray() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public List<String> subList(int fromIndex, int toIndex) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public int size() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		
+		@Override
+		public String set(int index, String element) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public boolean retainAll(Collection<?> c) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+		@Override
+		public boolean removeAll(Collection<?> c) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+		@Override
+		public String remove(int index) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public boolean remove(Object o) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+		@Override
+		public ListIterator<String> listIterator(int index) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public ListIterator<String> listIterator() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public int lastIndexOf(Object o) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		
+		@Override
+		public Iterator<String> iterator() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public boolean isEmpty() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+		@Override
+		public int indexOf(Object o) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		
+		@Override
+		public String get(int index) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public boolean containsAll(Collection<?> c) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+		@Override
+		public boolean contains(Object o) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+		@Override
+		public void clear() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public boolean addAll(int index, Collection<? extends String> c) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+		@Override
+		public boolean addAll(Collection<? extends String> c) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		
+		@Override
+		public void add(int index, String element) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public boolean add(String e) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+	};
+	
+	@Override
+	public void onEnable() {
+		menu = new OperatorSelect(this);
+		settings.setup(this);
+		getLogger().info("Craft Six Siege has been enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(new Listeners(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		getLogger().info("Craft Six Siege listeners ready!");
+		getLogger().info("Craft Six Siege commands ready!");
+	}
+	
+	@Override
+	public void onDisable() {
+		getLogger().info("Craft Six Siege has been disabled!");
+	}
+	
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) 
+	{
+        if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + "The console cannot use Medic!");
+                return true;
+        }
+       
+        Player p = (Player) sender;
+       
+        if (cmd.getName().equalsIgnoreCase("message")) 
+        {
+        	p.sendMessage(ChatColor.GREEN + "UI Opened");
+        	menu.show(p);
+        }
+        
+        if (cmd.getName().equalsIgnoreCase("setwarp")) {
+            if (args.length == 0) {
+                    p.sendMessage(ChatColor.RED + "Please specify a name!");
+                    return true;
+            }
+            settings.getData().set("arenas." + args[0] + ".world", p.getLocation().getWorld().getName());
+            settings.getData().set("arenas." + args[0] + ".x", p.getLocation().getX());
+            settings.getData().set("arenas." + args[0] + ".y", p.getLocation().getY());
+            settings.getData().set("arenas." + args[0] + ".z", p.getLocation().getZ());
+            settings.saveData();
+            arenas
+            p.sendMessage(ChatColor.GREEN + "Set arena " + args[0] + "!");
+        }
+        
+        return true;
+	}
+	
+}

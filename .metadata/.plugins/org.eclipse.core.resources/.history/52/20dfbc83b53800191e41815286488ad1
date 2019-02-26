@@ -1,0 +1,22 @@
+package me.xboxsignout.rainbow;
+
+
+import net.minecraft.server.v1_12_R1.EntityChicken;
+import net.minecraft.server.v1_12_R1.GenericAttributes;
+import net.minecraft.server.v1_12_R1.IAttribute;
+
+public class Bomb extends EntityChicken
+{
+	public Bomb(net.minecraft.server.v1_12_R1.World world)
+	{
+		super(world);
+	}
+	
+	@Override
+	protected void initAttributes() {
+		
+		super.initAttributes();
+		this.getAttributeInstance(IAttribute.)
+	}
+	
+}

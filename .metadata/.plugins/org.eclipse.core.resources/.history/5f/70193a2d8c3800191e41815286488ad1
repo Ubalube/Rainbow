@@ -1,0 +1,22 @@
+package me.xboxsignout.rainbow;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Main extends JavaPlugin
+{
+	@Override
+	public void onEnable() {
+		getLogger().info("Craft Six Siege has been enabled!");
+		Bukkit.getServer().getPluginManager().registerEvents(new Listeners(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(new OperatorSelect(this), this);
+		getLogger().info("Craft Six Siege listeners ready!");
+		getLogger().info("Craft Six Siege commands ready!");
+	}
+	
+	@Override
+	public void onDisable() {
+		getLogger().info("Craft Six Siege has been disabled!");
+	}
+	
+}
