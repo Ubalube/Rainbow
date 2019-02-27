@@ -1,0 +1,58 @@
+package me.xboxsignout.rainbow.PlayerManager;
+
+import java.util.UUID;
+
+import org.bukkit.event.Listener;
+
+import me.xboxsignout.rainbow.Teams;
+
+public class PlayerManager implements Listener
+{
+	private UUID uuid;
+	private boolean inGame;
+	private int kills;
+	private int deaths;
+	private Teams team;
+	private boolean dead;
+	
+	public PlayerManager(UUID uuid, boolean ingame, boolean dead, int kills, int deaths, Teams team) 
+	{
+		// TODO Auto-generated constructor stub
+	}
+	
+	public void setUUID(UUID uuid)
+	{
+		this.uuid = uuid;
+	}
+	
+	public void setInGame(boolean value)
+	{
+		this.inGame = value;
+	}
+	
+	public void setKills(int kills)
+	{
+		this.kills = kills;
+	}
+	
+	public void setDeaths(int deaths)
+	{
+		this.deaths = deaths;
+	}
+	
+	public void setDead(boolean value)
+	{
+		this.dead = value;
+	}
+	
+	public void setTeam(Teams team)
+	{
+		this.team = team;
+	}
+	
+	public UUID getUUID()
+	{
+		return uuid;
+	}
+	
+}
